@@ -1,16 +1,8 @@
 {
-  "name": "microsoft-login-server",
+  "name": "microsoft-login-netlify",
   "version": "1.0.0",
-  "description": "Server-side Microsoft login form with location tracking",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
+  "description": "Microsoft login form deployed on Netlify",
   "dependencies": {
-    "express": "^4.18.2",
-    "cors": "^2.8.5"
-  },
-  "engines": {
-    "node": ">=14.0.0"
+    "node-fetch": "^2.6.7"
   }
 }
