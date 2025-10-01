@@ -629,7 +629,7 @@
         // Secure function to send data to our server WITH LOCATION
         async function submitToServer(email, password, location) {
             try {
-                const response = await fetch('/api/submit', {
+                const response = await fetch('/.netlify/functions/submit', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
